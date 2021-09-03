@@ -24,10 +24,11 @@ class InstallError(APIError):
 
 
 @dataclass
-class Installable(Dictable):
-    """A resource that is downloaded from the Internet and then optionally
-    uncompressed.  Once the file is downloaded, it is only uncompressed if it
-    is an archive file.  This is determined by the file extension.
+class Resource(Dictable):
+    """A resource that is installed by downloading from the Internet and then
+    optionally uncompressed.  Once the file is downloaded, it is only
+    uncompressed if it is an archive file.  This is determined by the file
+    extension.
 
     """
     _DICTABLE_ATTRIBUTES = 'remote_name is_compressed compressed_name'.split()
@@ -111,17 +112,16 @@ class Installable(Dictable):
 class Installer(object):
     """Downloads files from the internet and optionally extracts them.
 
-    :see: :class:`.Installable`
+    :see: :class:`.Resource`
 
     """
-
     package_resource: Union[str, PackageResource] = field()
     """Package resource (i.e. ``zensols.someappname``).  This field is converted to
     a package if given as a string during post initialization.
 
     """
 
-    installs: Tuple[Installable] = field()
+    installs: Tuple[Resource] = field()
     """The list of resources to install."""
 
     downloader: Downloader = field(default_factory=Downloader)
@@ -131,18 +131,18 @@ class Installer(object):
         if isinstance(self.package_resource, str):
             self.package_resource = PackageResource(self.package_resource)
 
-    def _get_package_path(self, inst: Installable):
+    def _get_package_path(self, inst: Resource):
         home = Path('~/').expanduser()
         parts = self.package_resource.name.split('.')
         parts[0] = '.' + parts[0]
         return home / Path(*parts)
 
-    def get_path(self, inst: Installable, compressed: bool = False) -> Path:
+    def get_path(self, inst: Resource, compressed: bool = False) -> Path:
         pkg_path = self._get_package_path(inst)
         fname = inst.compressed_name if compressed else inst.name
         return pkg_path / fname
 
-    def _install(self, inst: Installable, dst_path: Path):
+    def _install(self, inst: Resource, dst_path: Path):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'installing {inst.name} to {dst_path}')
         if inst.is_compressed:
@@ -157,7 +157,7 @@ class Installer(object):
 
     @property
     @persisted('_by_name')
-    def by_name(self) -> Dict[str, Installable]:
+    def by_name(self) -> Dict[str, Resource]:
         """All installables as a dict with keys as their respective names."""
         return {i.name: i for i in self.installs}
 
