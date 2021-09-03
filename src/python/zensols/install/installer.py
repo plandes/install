@@ -115,32 +115,42 @@ class Installer(object):
     :see: :class:`.Resource`
 
     """
-    package_resource: Union[str, PackageResource] = field()
+    installs: Tuple[Resource] = field()
+    """The list of resources to install."""
+
+    package_resource: Union[str, PackageResource] = field(default=None)
     """Package resource (i.e. ``zensols.someappname``).  This field is converted to
-    a package if given as a string during post initialization.
+    a package if given as a string during post initialization.  This is used to
+    set :obj:`base_directory` using the package name from the home directory if
+    given.  Otherwise, :obj:`base_directory` is used.  One must be set.
 
     """
 
-    installs: Tuple[Resource] = field()
-    """The list of resources to install."""
+    base_directory: Path = field(default=None)
+    """The directory to base relative resource paths.
+
+    :see: :obj:`package_resource`
+
+    """
 
     downloader: Downloader = field(default_factory=Downloader)
     """Used to download the file from the Internet."""
 
     def __post_init__(self):
+        if self.package_resource is None and self.base_directory is None:
+            raise InstallError(
+                'Either package_resource or base_directory must be set')
         if isinstance(self.package_resource, str):
             self.package_resource = PackageResource(self.package_resource)
-
-    def _get_package_path(self, inst: Resource):
-        home = Path('~/').expanduser()
-        parts = self.package_resource.name.split('.')
-        parts[0] = '.' + parts[0]
-        return home / Path(*parts)
+        if self.base_directory is None:
+            home = Path('~/').expanduser()
+            parts = self.package_resource.name.split('.')
+            parts[0] = '.' + parts[0]
+            self.base_directory = home / Path(*parts)
 
     def get_path(self, inst: Resource, compressed: bool = False) -> Path:
-        pkg_path = self._get_package_path(inst)
         fname = inst.compressed_name if compressed else inst.name
-        return pkg_path / fname
+        return self.base_directory / fname
 
     def _install(self, inst: Resource, dst_path: Path):
         if logger.isEnabledFor(logging.INFO):
@@ -158,7 +168,7 @@ class Installer(object):
     @property
     @persisted('_by_name')
     def by_name(self) -> Dict[str, Resource]:
-        """All installables as a dict with keys as their respective names."""
+        """All resources as a dict with keys as their respective names."""
         return {i.name: i for i in self.installs}
 
     def install(self):
