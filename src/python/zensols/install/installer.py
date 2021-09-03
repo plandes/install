@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Union, Tuple
+from typing import Union, Tuple, Dict
 from dataclasses import dataclass, field
 import logging
 import re
@@ -12,6 +12,7 @@ import urllib
 from urllib.parse import ParseResult
 import patoolib
 from zensols.util import APIError, PackageResource
+from zensols.persist import persisted
 from zensols.config import Dictable
 from zensols.install import Downloader
 
@@ -136,7 +137,7 @@ class Installer(object):
         parts[0] = '.' + parts[0]
         return home / Path(*parts)
 
-    def _get_local_path(self, inst: Installable, compressed: bool):
+    def get_path(self, inst: Installable, compressed: bool = False) -> Path:
         pkg_path = self._get_package_path(inst)
         fname = inst.compressed_name if compressed else inst.name
         return pkg_path / fname
@@ -145,7 +146,7 @@ class Installer(object):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'installing {inst.name} to {dst_path}')
         if inst.is_compressed:
-            comp_path = self._get_local_path(inst, True)
+            comp_path = self.get_path(inst, True)
             if not comp_path.is_file():
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'missing compressed file {comp_path}')
@@ -154,12 +155,18 @@ class Installer(object):
         else:
             self.downloader.download(inst.url, dst_path)
 
+    @property
+    @persisted('_by_name')
+    def by_name(self) -> Dict[str, Installable]:
+        """All installables as a dict with keys as their respective names."""
+        return {i.name: i for i in self.installs}
+
     def install(self):
         """Download and install all resources.
 
         """
         for inst in self.installs:
-            local_path: Path = self._get_local_path(inst, False)
+            local_path: Path = self.get_path(inst, False)
             if local_path.exists():
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'found: {local_path}--skipping')
