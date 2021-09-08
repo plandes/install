@@ -7,7 +7,7 @@
 [![Build Status][build-badge]][build-link]
 
 Simple light API to download and install files.  If the file appears to be a
-compressed file by ending with `zip`, `tar.gz`, `tgz` etc, then also uncompress
+compressed file by ending with `zip`, `tar.gz`, `tgz` etc, then also un-compress
 the file after it is downloaded.
 
 
