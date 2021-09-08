@@ -47,7 +47,6 @@ class TestApplication(unittest.TestCase):
         self.assertFalse(self.none_name_file.exists())
         installer: Installer = self.fac('none_name_installer')
         statuses: List[Status] = installer.install()
-        print('FFF', self.none_name_file)
         self.assertTrue(self.none_name_file.exists())
         self.assertEqual(1, len(statuses))
         st = statuses[0]
