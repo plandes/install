@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Union, Tuple, Dict
+from typing import Union, Tuple, Dict, List
 from dataclasses import dataclass, field
 import logging
 import re
@@ -34,6 +34,7 @@ class Resource(Dictable):
     _DICTABLE_ATTRIBUTES = 'remote_name is_compressed compressed_name'.split()
     _FILE_REGEX = re.compile(r'^(.+)\.(tar\.gz|tgz|tar\.bz2|' +
                              '|'.join(patoolib.ArchiveFormats) + ')$')
+    _NO_FILE_REGEX = re.compile(r'^(?:.+/)?(.+?)\.(.+)?$')
 
     url: str = field()
     """The URL that locates the file to install."""
@@ -49,7 +50,14 @@ class Resource(Dictable):
         remote_path = Path(url.path)
         m = self._FILE_REGEX.match(remote_path.name)
         if m is None:
+            m = self._NO_FILE_REGEX.match(remote_path.name)
             self._extension = None
+            if m is None:
+                self.remote_name = remote_path.name
+            else:
+                self.remote_name = m.group(1)
+            if self.name is None:
+                self.name = remote_path.name
         else:
             self.remote_name, self._extension = m.groups()
             if self.name is None:
@@ -79,7 +87,7 @@ class Resource(Dictable):
             ext_dir = out_dir / self.remote_name
             if not ext_dir.is_dir():
                 raise InstallError(f'Trying to create {dst_dir} but ' +
-                                   f'expecting extracted dir: {ext_dir}')
+                                   f'missing extracted dir: {ext_dir}')
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'renaming {ext_dir} to {dst_dir}')
             ext_dir.rename(dst_dir)
@@ -106,6 +114,29 @@ class Resource(Dictable):
         else:
             name = self.name
         return name
+
+
+@dataclass
+class Status(Dictable):
+    """Tells of what was installed and how.
+
+    """
+    resource: Resource = field()
+    """The resource that might have been installed."""
+
+    downloaded_path: Path = field()
+    """The path where :obj:`resource` was downloaded, or None if it wasn't
+    downloaded.
+
+    """
+
+    target_path: Path = field()
+    """Where the resource was installed and/or downloaded on the file system.
+
+    """
+
+    uncompressed: bool = field()
+    """Whether or not the resource was uncompressed."""
 
 
 @dataclass
@@ -150,9 +181,14 @@ class Installer(object):
 
     def get_path(self, inst: Resource, compressed: bool = False) -> Path:
         fname = inst.compressed_name if compressed else inst.name
+        if fname is None:
+            fname = inst.remote_name
         return self.base_directory / fname
 
-    def _install(self, inst: Resource, dst_path: Path):
+    def _install(self, inst: Resource, dst_path: Path) -> Status:
+        uncompressed: bool = False
+        downloaded_path: Path = False
+        target_path: Path = None
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'installing {inst.name} to {dst_path}')
         if inst.is_compressed:
@@ -161,9 +197,15 @@ class Installer(object):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'missing compressed file {comp_path}')
                 self.downloader.download(inst.url, comp_path)
+                downloaded_path = comp_path
             inst.uncompress(comp_path)
+            target_path = comp_path
+            uncompressed = True
         else:
             self.downloader.download(inst.url, dst_path)
+            downloaded_path = dst_path
+            target_path = dst_path
+        return Status(inst, downloaded_path, target_path, uncompressed)
 
     @property
     @persisted('_by_name')
@@ -171,16 +213,22 @@ class Installer(object):
         """All resources as a dict with keys as their respective names."""
         return {i.name: i for i in self.installs}
 
-    def install(self):
+    def install(self) -> List[Status]:
         """Download and install all resources.
 
         """
+        statuses: List[Status] = []
         for inst in self.installs:
             local_path: Path = self.get_path(inst, False)
+            status: Status = None
             if local_path.exists():
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'found: {local_path}--skipping')
+                comp_path = self.get_path(inst, True)
+                status = Status(inst, None, comp_path, False)
             else:
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'missing {local_path}')
-                self._install(inst, local_path)
+                status = self._install(inst, local_path)
+            statuses.append(status)
+        return statuses

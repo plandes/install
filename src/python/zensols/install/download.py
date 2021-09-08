@@ -55,7 +55,7 @@ class Downloader(object):
                     logger.info(f'creating directory: {parent}')
                 parent.mkdir(parents=True)
             if logger.isEnabledFor(logging.INFO):
-                logger.info(f'downloading vocab from {url} to {output_path}')
+                logger.info(f'downloading {url} to {output_path}')
             params = dict(self.tqdm_params)
             params.update({'miniters': 1, 'desc': url.split('/')[-1]})
             if self.use_progress_bar:
