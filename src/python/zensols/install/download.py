@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 class _DownloadProgressBar(tqdm):
+    """Tqdm progress automoation.
+
+    """
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
             self.total = tsize
