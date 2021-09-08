@@ -26,6 +26,12 @@ pip3 install zensols.install
 Binaries are also available on [pypi].
 
 
+## Usage
+
+See the [resource](test-resources/test.conf) and [unit
+test](test/python/test_install.py) to learn how to use the API.
+
+
 ## Changelog
 
 An extensive changelog is available [here](CHANGELOG.md).
