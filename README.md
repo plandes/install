@@ -6,7 +6,9 @@
 [![Python 3.9][python39-badge]][python39-link]
 [![Build Status][build-badge]][build-link]
 
-Downloads and installs (optionally compressed) files.
+Simple light API to download and install files.  If the file appears to be a
+compressed file by ending with `zip`, `tar.gz`, `tgz` etc, then also uncompress
+the file after it is downloaded.
 
 
 ## Documentation
