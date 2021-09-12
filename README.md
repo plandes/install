@@ -116,4 +116,4 @@ Copyright (c) 2021 Paul Landes
 [build-badge]: https://github.com/plandes/install/workflows/CI/badge.svg
 [build-link]: https://github.com/plandes/install/actions
 
-[example]: https://github.com/plandes/install/example
+[example]: https://github.com/plandes/install/tree/master/example
