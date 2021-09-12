@@ -7,9 +7,15 @@ PROJ_TYPE =		python
 # make modules to add functionality to a build
 PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy
 INFO_TARGETS +=		appinfo
+CLEAN_DEPS +=		cleanexample
 
 include ./zenbuild/main.mk
 
 .PHONY:			appinfo
 appinfo:
 			@echo "app-resources-dir: $(RESOURCES_DIR)"
+
+.PHONY:			cleanexample
+cleanexample:
+			find example -type d -name __pycache__ \
+			  -prune -exec rm -r {} \;
