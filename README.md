@@ -30,8 +30,65 @@ Binaries are also available on [pypi].
 
 ## Usage
 
-See the [resource](test-resources/test.conf) and [unit
-test](test/python/test_install.py) to learn how to use the API.
+The below code is given in the [example].
+
+First create the installer configuration with each file to be installed as a
+resource as a file `install.conf`:
+```ini
+[zip_resource]
+class_name = zensols.install.Resource
+url = https://github.com/plandes/zenbuild/archive/refs/tags/general_build.zip
+# we have to give the name of the diretory in the zip file so the program knows
+# what to unzip; otherwise it is named from the section, or file if `None`
+name = zenbuild-general_build
+# uncomment below to keep the `zenbuild-general_build.zip` zip file
+#clean_up = False
+
+[downloader]
+class_name = zensols.install.Downloader
+#use_progress_bar = False
+
+[installer]
+class_name = zensols.install.Installer
+downloader = instance: downloader
+# uncomment the below line, then comment out `base_directory` to use the
+# package name (using the zensols.cli.ApplicationFactory--see example); using
+# `package_resource` will in install a ~/.<package name> install directory
+base_directory = path: install_dir
+#package_resource = ${package:name}
+installs = instance: list: zip_resource
+```
+
+Now use the configuration to create the installer and call it:
+```python
+import logging
+from zensols.config import IniConfig, ImportConfigFactory
+from zensols.install import Installer
+
+logging.basicConfig(level=logging.INFO)
+fac = ImportConfigFactory(IniConfig('install.conf'))
+installer: Installer = fac.instance('installer')
+installer.install()
+```
+
+This code creates a new directory with the un-zipped files in `install_dir`:
+```bash
+INFO:zensols.install.installer:installing zenbuild-general_build to install_dir/zenbuild-general_build
+INFO:zensols.install.download:creating directory: install_dir
+INFO:zensols.install.download:downloading https://github.com/plandes/zenbuild/archive/refs/tags/general_build.zip to install_dir/zenbuild-general_build.zip
+general_build.zip: 16.4kB [00:00, 40.1kB/s]
+INFO:zensols.install.installer:uncompressing install_dir/zenbuild-general_build.zip to install_dir
+patool: Extracting install_dir/zenbuild-general_build.zip ...
+patool: ... install_dir/zenbuild-general_build.zip extracted to `install_dir'.
+INFO:zensols.install.installer:cleaning up downloaded file: install_dir/zenbuild-general_build.zip
+```
+
+First the program checks to see if the target directory (`name` property in the
+`zip_resource` section) exists.  It then downloads it when it can't find either
+the target directory or the downloaded file.
+
+If the program is run a second time, there will be no output since the
+installed directory now exists.
 
 
 ## Changelog
@@ -58,3 +115,5 @@ Copyright (c) 2021 Paul Landes
 [python39-link]: https://www.python.org/downloads/release/python-390
 [build-badge]: https://github.com/plandes/install/workflows/CI/badge.svg
 [build-link]: https://github.com/plandes/install/actions
+
+[example]: https://github.com/plandes/install/example
