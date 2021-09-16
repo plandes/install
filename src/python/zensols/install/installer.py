@@ -78,20 +78,20 @@ class Resource(Dictable):
             src = path
             if out_dir is None:
                 out_dir = path.parent
-        dst_dir = out_dir / self.name
+        target = out_dir / self.name
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'uncompressing {src} to {out_dir}')
         out_dir.mkdir(parents=True, exist_ok=True)
         patoolib.extract_archive(str(src), outdir=str(out_dir))
         # the extracted data can either be a file (gz/bz2) or a directory
-        if not dst_dir.exists():
+        if not target.exists():
             ext_dir = out_dir / self.remote_name
             if not ext_dir.is_dir():
-                raise InstallError(f'Trying to create {dst_dir} but ' +
-                                   f'missing extracted dir: {ext_dir}')
+                raise InstallError(f'Trying to create {target} but ' +
+                                   f'missing extracted path: {ext_dir}')
             if logger.isEnabledFor(logging.INFO):
-                logger.info(f'renaming {ext_dir} to {dst_dir}')
-            ext_dir.rename(dst_dir)
+                logger.info(f'renaming {ext_dir} to {target}')
+            ext_dir.rename(target)
         if self.clean_up:
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'cleaning up downloaded file: {src}')
