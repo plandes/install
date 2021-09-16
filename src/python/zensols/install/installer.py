@@ -32,7 +32,7 @@ class Resource(Dictable):
 
     """
     _DICTABLE_ATTRIBUTES = 'remote_name is_compressed compressed_name'.split()
-    _FILE_REGEX = re.compile(r'^(.+)\.(tar\.gz|tgz|tar\.bz2|' +
+    _FILE_REGEX = re.compile(r'^(.+)\.(tar\.gz|tgz|tar\.bz2|gz|bz2|' +
                              '|'.join(patoolib.ArchiveFormats) + ')$')
     _NO_FILE_REGEX = re.compile(r'^(?:.+/)?(.+?)\.(.+)?$')
 
@@ -83,7 +83,8 @@ class Resource(Dictable):
             logger.info(f'uncompressing {src} to {out_dir}')
         out_dir.mkdir(parents=True, exist_ok=True)
         patoolib.extract_archive(str(src), outdir=str(out_dir))
-        if not dst_dir.is_dir():
+        # the extracted data can either be a file (gz/bz2) or a directory
+        if not dst_dir.exists():
             ext_dir = out_dir / self.remote_name
             if not ext_dir.is_dir():
                 raise InstallError(f'Trying to create {dst_dir} but ' +
