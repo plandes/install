@@ -233,3 +233,11 @@ class Installer(object):
                 status = self._install(inst, local_path)
             statuses.append(status)
         return statuses
+
+    def __call__(self) -> List[Status]:
+        return self.install()
+
+    def __getitem__(self, resource: Union[str, Resource]):
+        if isinstance(resource, str):
+            resource = self.by_name[resource]
+        return self.get_path(resource)
