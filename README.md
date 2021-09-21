@@ -13,9 +13,8 @@ the file after it is downloaded.
 
 ## Documentation
 
-See the [full documentation](https://plandes.github.io/install/index.html).
-The [API reference](https://plandes.github.io/install/api.html) is also
-available.
+* [Full documentation](https://plandes.github.io/install/index.html)
+* [API reference](https://plandes.github.io/install/api.html)
 
 
 ## Obtaining
@@ -89,6 +88,22 @@ the target directory or the downloaded file.
 
 If the program is run a second time, there will be no output since the
 installed directory now exists.
+
+
+## Citation
+
+If you use this project in your research please use the following BibTeX entry:
+```
+@article{Landes_DiEugenio_Caragea_2021,
+  title={DeepZensols: Deep Natural Language Processing Framework},
+  url={http://arxiv.org/abs/2109.03383},
+  note={arXiv: 2109.03383},
+  journal={arXiv:2109.03383 [cs]},
+  author={Landes, Paul and Di Eugenio, Barbara and Caragea, Cornelia},
+  year={2021},
+  month={Sep}
+}
+```
 
 
 ## Changelog
