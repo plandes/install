@@ -141,7 +141,7 @@ class Status(Dictable):
 
 
 @dataclass
-class Installer(object):
+class Installer(Dictable):
     """Downloads files from the internet and optionally extracts them.
 
     :see: :class:`.Resource`
