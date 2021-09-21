@@ -42,6 +42,12 @@ class Resource(Dictable):
     name: str = field(default=None)
     """Used for local file naming."""
 
+    rename: bool = field(default=True)
+    """If ``True`` then rename the directory to the :obj:`name`."""
+
+    check_path: str = field(default=None)
+    """The file to check for existance before doing uncompressing."""
+
     clean_up: bool = field(default=True)
     """Whether or not to remove the downloaded compressed after finished."""
 
@@ -79,15 +85,20 @@ class Resource(Dictable):
             if out_dir is None:
                 out_dir = path.parent
         target = out_dir / self.name
+        if self.check_path is None:
+            check_path = target
+        else:
+            check_path = out_dir / self.check_path
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'uncompressing {src} to {out_dir}')
         out_dir.mkdir(parents=True, exist_ok=True)
-        patoolib.extract_archive(str(src), outdir=str(out_dir))
+        if not check_path.exists():
+            patoolib.extract_archive(str(src), outdir=str(out_dir))
         # the extracted data can either be a file (gz/bz2) or a directory
-        if not target.exists():
+        if self.rename and not check_path.exists():
             ext_dir = out_dir / self.remote_name
             if not ext_dir.is_dir():
-                raise InstallError(f'Trying to create {target} but ' +
+                raise InstallError(f'Trying to create {check_path} but ' +
                                    f'missing extracted path: {ext_dir}')
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'renaming {ext_dir} to {target}')
