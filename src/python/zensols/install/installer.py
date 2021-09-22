@@ -69,7 +69,7 @@ class Resource(Dictable):
             if self.name is None:
                 self.name = self.remote_name
 
-    def uncompress(self, path: Path = None, out_dir: Path = None):
+    def uncompress(self, path: Path = None, out_dir: Path = None) -> bool:
         """Uncompress the file.
 
         :param path: the file to uncompress
@@ -77,6 +77,7 @@ class Resource(Dictable):
         :param out_dir: where the uncompressed files are extracted
 
         """
+        uncompressed = False
         if path is None:
             src = Path(self.compressed_name)
             out_dir = Path('.')
@@ -94,6 +95,7 @@ class Resource(Dictable):
                 logger.info(f'uncompressing {src} to {out_dir}')
             out_dir.mkdir(parents=True, exist_ok=True)
             patoolib.extract_archive(str(src), outdir=str(out_dir))
+            uncompressed = True
         # the extracted data can either be a file (gz/bz2) or a directory
         if self.rename and not check_path.exists():
             ext_dir = out_dir / self.remote_name
@@ -107,6 +109,7 @@ class Resource(Dictable):
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'cleaning up downloaded file: {src}')
             src.unlink()
+        return uncompressed
 
     @property
     def is_compressed(self) -> bool:
@@ -201,8 +204,6 @@ class Installer(Dictable):
         uncompressed: bool = False
         downloaded_path: Path = False
         target_path: Path = None
-        if logger.isEnabledFor(logging.INFO):
-            logger.info(f'installing {inst.name} to {dst_path}')
         if inst.is_compressed:
             comp_path = self.get_path(inst, True)
             if not comp_path.is_file():
@@ -210,10 +211,14 @@ class Installer(Dictable):
                     logger.debug(f'missing compressed file {comp_path}')
                 self.downloader.download(inst.url, comp_path)
                 downloaded_path = comp_path
-            inst.uncompress(comp_path)
+            uncompressed = inst.uncompress(comp_path)
             target_path = comp_path
-            uncompressed = True
+            if uncompressed:
+                if logger.isEnabledFor(logging.INFO):
+                    logger.info(f'uncompressed to {comp_path}')
         else:
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'downloading: {inst.url} -> {dst_path}')
             self.downloader.download(inst.url, dst_path)
             downloaded_path = dst_path
             target_path = dst_path
