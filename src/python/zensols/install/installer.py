@@ -89,10 +89,10 @@ class Resource(Dictable):
             check_path = target
         else:
             check_path = out_dir / self.check_path
-        if logger.isEnabledFor(logging.INFO):
-            logger.info(f'uncompressing {src} to {out_dir}')
-        out_dir.mkdir(parents=True, exist_ok=True)
         if not check_path.exists():
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'uncompressing {src} to {out_dir}')
+            out_dir.mkdir(parents=True, exist_ok=True)
             patoolib.extract_archive(str(src), outdir=str(out_dir))
         # the extracted data can either be a file (gz/bz2) or a directory
         if self.rename and not check_path.exists():
