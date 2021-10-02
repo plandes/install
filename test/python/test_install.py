@@ -21,6 +21,8 @@ class TestApplication(unittest.TestCase):
         self.with_name_file = Path(target / 'dump/empty.pdf')
         self.zip_file = Path(target / 'dump/zenbuild-general_build.zip')
         self.zip_uncompressed_dir = Path(target / 'dump/zenbuild-general_build')
+        self.zip_file_overridden = Path(target / 'dump/general_build.zip')
+        self.zip_uncompressed_dir_overridden = Path(target / 'dump/general_build')
         if target.is_dir():
             shutil.rmtree(target)
 
@@ -74,7 +76,7 @@ class TestApplication(unittest.TestCase):
         self.assertEqual(st.downloaded_path, self.with_name_file)
         self.assertEqual(st.uncompressed, False)
 
-    def test_uncompress_(self):
+    def test_uncompress_zip(self):
         self.assertFalse(self.zip_file.exists())
         self.assertFalse(self.zip_uncompressed_dir.exists())
         installer: Installer = self.fac('zip_installer')
@@ -92,5 +94,27 @@ class TestApplication(unittest.TestCase):
         st = statuses[0]
         self.assertEqual(st.resource.name, self.zip_uncompressed_dir.name)
         self.assertEqual(st.target_path, self.zip_file)
+        self.assertEqual(st.downloaded_path, None)
+        self.assertEqual(st.uncompressed, False)
+
+    def test_uncompress_zip_overridden_dir(self):
+        self.assertFalse(self.zip_file.exists())
+        self.assertFalse(self.zip_uncompressed_dir.exists())
+        installer: Installer = self.fac('zip_installer_overridden')
+        statuses: List[Status] = installer.install()
+
+        self.assertTrue(self.zip_file_overridden.is_file())
+        self.assertTrue(self.zip_uncompressed_dir_overridden.is_dir())
+        self.assertEqual(1, len(statuses))
+        st = statuses[0]
+        self.assertEqual(st.resource.name, self.zip_uncompressed_dir_overridden.name)
+        self.assertEqual(st.target_path, self.zip_file_overridden)
+        self.assertEqual(st.downloaded_path, self.zip_file_overridden)
+        self.assertEqual(st.uncompressed, True)
+
+        statuses: List[Status] = installer.install()
+        st = statuses[0]
+        self.assertEqual(st.resource.name, self.zip_uncompressed_dir_overridden.name)
+        self.assertEqual(st.target_path, self.zip_file_overridden)
         self.assertEqual(st.downloaded_path, None)
         self.assertEqual(st.uncompressed, False)
