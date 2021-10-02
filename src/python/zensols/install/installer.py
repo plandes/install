@@ -165,7 +165,10 @@ class Status(Dictable):
 
 @dataclass
 class Installer(Dictable):
-    """Downloads files from the internet and optionally extracts them.
+    """Downloads files from the internet and optionally extracts them.  The files
+    are extracted to either :obj:`base_directory` or a path resolved from the
+    home directory with name (i.e. ``~/.zensols/someappname)``.  The
+    :obj:`sub_directory` is also added to the path if set.
 
     :see: :class:`.Resource`
 
@@ -182,9 +185,17 @@ class Installer(Dictable):
     """
 
     base_directory: Path = field(default=None)
-    """The directory to base relative resource paths.
+    """The directory to base relative resource paths.  If this is not set, then
+    this attribute is set from :obj:`package_resource` on initialization.
 
     :see: :obj:`package_resource`
+
+    """
+
+    sub_directory: Path = field(default=None)
+    """A path that is added to :obj:`base_directory` if set.  Setting this is
+    useful to allow for more directory structure in the installation (see class
+    docs).
 
     """
 
@@ -198,10 +209,17 @@ class Installer(Dictable):
         if isinstance(self.package_resource, str):
             self.package_resource = PackageResource(self.package_resource)
         if self.base_directory is None:
-            home = Path('~/').expanduser()
-            parts = self.package_resource.name.split('.')
+            base: Path = Path('~/').expanduser()
+            parts: List[str] = self.package_resource.name.split('.')
             parts[0] = '.' + parts[0]
-            self.base_directory = home / Path(*parts)
+            pkg_path: Path = Path(*parts)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'creating base path from home={base}/' +
+                             f'sub={self.sub_directory}/pkg_path={pkg_path}')
+            base = base / pkg_path
+            if self.sub_directory is not None:
+                base = base / self.sub_directory
+            self.base_directory = base
 
     def get_path(self, inst: Resource, compressed: bool = False) -> Path:
         fname = inst.compressed_name if compressed else inst.name

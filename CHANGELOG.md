@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- Add configuration for a sub directory to be appended to the base directory.
+
+
 ## [0.0.5] - 2021-10-02
 ### Added
 - Configuration to override `Resource.remote_name`.
