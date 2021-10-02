@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- Configuration to override `Resource.remote_name`.
+
+
 ## [0.0.4] - 2021-09-22
 ### Changed
 - Better uncompress semantics and factual result status.

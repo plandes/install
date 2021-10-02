@@ -42,6 +42,12 @@ class Resource(Dictable):
     name: str = field(default=None)
     """Used for local file naming."""
 
+    remote_name: str = field(default=None)
+    """The name of extracted file or directory.  If this isn't set, it is taken
+    from the file name.
+
+    """
+
     rename: bool = field(default=True)
     """If ``True`` then rename the directory to the :obj:`name`."""
 
@@ -53,21 +59,24 @@ class Resource(Dictable):
 
     def __post_init__(self):
         url: ParseResult = urllib.parse.urlparse(self.url)
-        remote_path = Path(url.path)
+        remote_path: Path = Path(url.path)
+        remote_name: str
         m = self._FILE_REGEX.match(remote_path.name)
         if m is None:
             m = self._NO_FILE_REGEX.match(remote_path.name)
             self._extension = None
             if m is None:
-                self.remote_name = remote_path.name
+                remote_name = remote_path.name
             else:
-                self.remote_name = m.group(1)
+                remote_name = m.group(1)
             if self.name is None:
                 self.name = remote_path.name
         else:
-            self.remote_name, self._extension = m.groups()
+            remote_name, self._extension = m.groups()
             if self.name is None:
-                self.name = self.remote_name
+                self.name = remote_name
+        if self.remote_name is None:
+            self.remote_name = remote_name
 
     def uncompress(self, path: Path = None, out_dir: Path = None) -> bool:
         """Uncompress the file.
