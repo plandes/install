@@ -55,7 +55,7 @@ downloader = instance: downloader
 # `package_resource` will in install a ~/.<package name> install directory
 base_directory = path: install_dir
 #package_resource = ${package:name}
-installs = instance: list: zip_resource
+resources = instance: list: zip_resource
 ```
 
 Now use the configuration to create the installer and call it:
