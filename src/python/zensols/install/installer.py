@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 import urllib
 from urllib.parse import ParseResult
+from frozendict import frozendict
 import patoolib
 from zensols.util import APIError, PackageResource
 from zensols.persist import persisted
@@ -48,6 +49,12 @@ class Resource(Dictable):
 
     """
 
+    is_compressed: bool = field(default=None)
+    """Whether or not the file is compressed.  If this isn't set, it is derived
+    from the file name.
+
+    """
+
     rename: bool = field(default=True)
     """If ``True`` then rename the directory to the :obj:`name`."""
 
@@ -77,6 +84,8 @@ class Resource(Dictable):
                 self.name = remote_name
         if self.remote_name is None:
             self.remote_name = remote_name
+        if self.is_compressed is None:
+            self.is_compressed = self._extension is not None
 
     def uncompress(self, path: Path = None, out_dir: Path = None) -> bool:
         """Uncompress the file.
@@ -119,13 +128,6 @@ class Resource(Dictable):
                 logger.info(f'cleaning up downloaded file: {src}')
             src.unlink()
         return uncompressed
-
-    @property
-    def is_compressed(self) -> bool:
-        """Whether or not the file is compressed.
-
-        """
-        return self._extension is not None
 
     @property
     def compressed_name(self) -> str:
@@ -173,7 +175,7 @@ class Installer(Dictable):
     :see: :class:`.Resource`
 
     """
-    installs: Tuple[Resource] = field()
+    resources: Tuple[Resource] = field()
     """The list of resources to install."""
 
     package_resource: Union[str, PackageResource] = field(default=None)
@@ -255,14 +257,19 @@ class Installer(Dictable):
     @persisted('_by_name')
     def by_name(self) -> Dict[str, Resource]:
         """All resources as a dict with keys as their respective names."""
-        return {i.name: i for i in self.installs}
+        return frozendict({i.name: i for i in self.resources})
+
+    @property
+    @persisted('_paths_by_name')
+    def paths_by_name(self) -> Dict[str, Path]:
+        return frozendict({i.name: self.get_path(i) for i in self.resources})
 
     def install(self) -> List[Status]:
         """Download and install all resources.
 
         """
         statuses: List[Status] = []
-        for inst in self.installs:
+        for inst in self.resources:
             local_path: Path = self.get_path(inst, False)
             status: Status = None
             if local_path.exists():

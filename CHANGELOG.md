@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- Rename `Install.installs` to `Install.resources`.
+- Switch `Resource.is_compressed` from a property to an attribute to make it
+  overridable.
+- Changed many cached `dict` to type `frozendict` to guard against
+  unintentional modification of immutable data structures.
+
+
 ## [0.0.6] - 2021-10-03
 ### Added
 - Add configuration for a sub directory to be appended to the base directory.
