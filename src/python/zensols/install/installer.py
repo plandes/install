@@ -167,16 +167,29 @@ class Status(Dictable):
 
 @dataclass
 class Installer(Dictable):
-    """Downloads files from the internet and optionally extracts them.  The files
-    are extracted to either :obj:`base_directory` or a path resolved from the
-    home directory with name (i.e. ``~/.zensols/someappname)``.  The
+    """Downloads files from the internet and optionally extracts them.
+
+    The files are extracted to either :obj:`base_directory` or a path resolved
+    from the home directory with name (i.e. ``~/.zensols/someappname)``.  The
     :obj:`sub_directory` is also added to the path if set.
+
+    Instances of this class are resource path iterable and indexable by name.
 
     :see: :class:`.Resource`
 
     """
+    DEFAULT_BASE_DIRECTORIES = ('~/.cache', '~/', '/tmp')
+    """Contains a list of directories to look as the default base when
+    :obj:`base_directory` is not given.
+
+    :see: :obj:`base_directory`
+
+    :see: :obj:`package_resource`
+
+    """
+
     resources: Tuple[Resource] = field()
-    """The list of resources to install."""
+    """The list of resources to install and track."""
 
     package_resource: Union[str, PackageResource] = field(default=None)
     """Package resource (i.e. ``zensols.someappname``).  This field is converted to
@@ -191,6 +204,8 @@ class Installer(Dictable):
     this attribute is set from :obj:`package_resource` on initialization.
 
     :see: :obj:`package_resource`
+
+    :see: :obj:`DEFAULT_BASE_DIRECTORIES`
 
     """
 
@@ -211,17 +226,28 @@ class Installer(Dictable):
         if isinstance(self.package_resource, str):
             self.package_resource = PackageResource(self.package_resource)
         if self.base_directory is None:
-            base: Path = Path('~/').expanduser()
-            parts: List[str] = self.package_resource.name.split('.')
+            self.base_directory = self._get_default_base()
+        if self.sub_directory is not None:
+            self.base_directory = self.base_directory / self.sub_directory
+
+    def _get_default_base(self) -> Path:
+        existing = tuple(filter(lambda p: p.is_dir(),
+                                map(lambda p: Path(p).expanduser(),
+                                    self.DEFAULT_BASE_DIRECTORIES)))
+        if len(existing) == 0:
+            raise InstallError('No default base directories found ' +
+                               f'in: {self.DEFAULT_BASE_DIRECTORIES}')
+        base: Path = existing[0]
+        parts: List[str] = self.package_resource.name.split('.')
+        is_home: bool = (base == Path('~/').expanduser())
+        if is_home:
+            # make a UNIX 'hidden' file if home directory based
             parts[0] = '.' + parts[0]
-            pkg_path: Path = Path(*parts)
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'creating base path from home={base}/' +
-                             f'sub={self.sub_directory}/pkg_path={pkg_path}')
-            base = base / pkg_path
-            if self.sub_directory is not None:
-                base = base / self.sub_directory
-            self.base_directory = base
+        pkg_path: Path = Path(*parts)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'creating base path from home={base}/' +
+                         f'sub={self.sub_directory}/pkg_path={pkg_path}')
+        return base / pkg_path
 
     def get_path(self, inst: Resource, compressed: bool = False) -> Path:
         fname = inst.compressed_name if compressed else inst.name
@@ -262,10 +288,13 @@ class Installer(Dictable):
     @property
     @persisted('_paths_by_name')
     def paths_by_name(self) -> Dict[str, Path]:
+        """All resource paths as a dict with keys as their respective names."""
         return frozendict({i.name: self.get_path(i) for i in self.resources})
 
     def install(self) -> List[Status]:
         """Download and install all resources.
+
+        :return: a list of statuses for each resource downloaded
 
         """
         statuses: List[Status] = []
@@ -291,3 +320,9 @@ class Installer(Dictable):
         if isinstance(resource, str):
             resource = self.by_name[resource]
         return self.get_path(resource)
+
+    def __iter__(self):
+        return map(lambda r: self.get_path(r), self.resources)
+
+    def __len__(self):
+        return len(self.resources)
