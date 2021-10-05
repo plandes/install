@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   overridable.
 - Changed many cached `dict` to type `frozendict` to guard against
   unintentional modification of immutable data structures.
+- Make base package relative to the ~/.cache directory if it exists.
 
 
 ## [0.0.6] - 2021-10-03

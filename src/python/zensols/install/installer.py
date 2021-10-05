@@ -170,8 +170,10 @@ class Installer(Dictable):
     """Downloads files from the internet and optionally extracts them.
 
     The files are extracted to either :obj:`base_directory` or a path resolved
-    from the home directory with name (i.e. ``~/.zensols/someappname)``.  The
-    :obj:`sub_directory` is also added to the path if set.
+    from the home directory with name (i.e. ``~/.cache/zensols/someappname)``.
+    If the ``~/.cache`` directory does not yet exist, it will base the installs
+    in the home directory per the :obj:`DEFAULT_BASE_DIRECTORIES` attribute.
+    Finally, the :obj:`sub_directory` is also added to the path if set.
 
     Instances of this class are resource path iterable and indexable by name.
 
