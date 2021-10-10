@@ -251,11 +251,50 @@ class Installer(Dictable):
                          f'sub={self.sub_directory}/pkg_path={pkg_path}')
         return base / pkg_path
 
-    def get_path(self, inst: Resource, compressed: bool = False) -> Path:
-        fname = inst.compressed_name if compressed else inst.name
+    def get_path(self, resource: Resource, compressed: bool = False) -> Path:
+        """Return the path where a resource is installed.
+
+        :param resource: the resource to find
+
+        :param compressed: if ``True``, return the path where its compressed
+                           file (if any) lives
+
+        :return: the path of the resource
+
+        """
+        fname = resource.compressed_name if compressed else resource.name
         if fname is None:
-            fname = inst.remote_name
+            fname = resource.remote_name
         return self.base_directory / fname
+
+    def get_singleton_path(self, compressed: bool = False) -> Path:
+        """Return the path of resource, which is expected to be the only one.
+
+        :param compressed: if ``True``, return the path where its compressed
+                           file (if any) lives
+
+        :raises: InstallError if the number of :obj:`resources` length isn't 1
+
+        :return: the resource's path
+
+        """
+        rlen = len(self.resources)
+        if rlen != 1:
+            raise InstallError(
+                f'Expecting configured resources to be one, but got {rlen}')
+        return self.get_path(self.resources[0], compressed)
+
+    @property
+    @persisted('_by_name')
+    def by_name(self) -> Dict[str, Resource]:
+        """All resources as a dict with keys as their respective names."""
+        return frozendict({i.name: i for i in self.resources})
+
+    @property
+    @persisted('_paths_by_name')
+    def paths_by_name(self) -> Dict[str, Path]:
+        """All resource paths as a dict with keys as their respective names."""
+        return frozendict({i.name: self.get_path(i) for i in self.resources})
 
     def _install(self, inst: Resource, dst_path: Path) -> Status:
         uncompressed: bool = False
@@ -280,18 +319,6 @@ class Installer(Dictable):
             downloaded_path = dst_path
             target_path = dst_path
         return Status(inst, downloaded_path, target_path, uncompressed)
-
-    @property
-    @persisted('_by_name')
-    def by_name(self) -> Dict[str, Resource]:
-        """All resources as a dict with keys as their respective names."""
-        return frozendict({i.name: i for i in self.resources})
-
-    @property
-    @persisted('_paths_by_name')
-    def paths_by_name(self) -> Dict[str, Path]:
-        """All resource paths as a dict with keys as their respective names."""
-        return frozendict({i.name: self.get_path(i) for i in self.resources})
 
     def install(self) -> List[Status]:
         """Download and install all resources.
