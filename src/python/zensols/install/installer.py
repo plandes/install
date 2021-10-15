@@ -229,13 +229,19 @@ class Installer(Dictable):
             self.package_resource = PackageResource(self.package_resource)
         if self.base_directory is None:
             self.base_directory = self._get_default_base()
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'resolved base directory: {self.base_directory}')
         if self.sub_directory is not None:
             self.base_directory = self.base_directory / self.sub_directory
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'resolbed base directory: {self.base_directory}')
 
     def _get_default_base(self) -> Path:
         existing = tuple(filter(lambda p: p.is_dir(),
                                 map(lambda p: Path(p).expanduser(),
                                     self.DEFAULT_BASE_DIRECTORIES)))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'existing default base directories: {existing}')
         if len(existing) == 0:
             raise InstallError('No default base directories found ' +
                                f'in: {self.DEFAULT_BASE_DIRECTORIES}')
