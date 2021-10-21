@@ -3,11 +3,12 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Union, Tuple, Dict, List
+from typing import Union, Tuple, Dict, List, Sequence
 from dataclasses import dataclass, field
 import logging
 import re
 from pathlib import Path
+import shutil
 import urllib
 from urllib.parse import ParseResult
 from frozendict import frozendict
@@ -64,6 +65,9 @@ class Resource(Dictable):
     clean_up: bool = field(default=True)
     """Whether or not to remove the downloaded compressed after finished."""
 
+    clean_up_paths: Sequence[Path] = field(default=None)
+    """Additional paths to remove after installation is complete"""
+
     def __post_init__(self):
         url: ParseResult = urllib.parse.urlparse(self.url)
         remote_path: Path = Path(url.path)
@@ -108,6 +112,8 @@ class Resource(Dictable):
             check_path = target
         else:
             check_path = out_dir / self.check_path
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'check path: {check_path}')
         if not check_path.exists():
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'uncompressing {src} to {out_dir}')
@@ -127,6 +133,19 @@ class Resource(Dictable):
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'cleaning up downloaded file: {src}')
             src.unlink()
+        if self.clean_up_paths is not None:
+            for file_name in self.clean_up_paths:
+                path = out_dir / file_name
+                if path.is_dir():
+                    if logger.isEnabledFor(logging.INFO):
+                        logger.info(f'removing clean up dir: {path}')
+                    shutil.rmtree(path)
+                elif path.is_file():
+                    if logger.isEnabledFor(logging.INFO):
+                        logger.info(f'removing clean up file: {path}')
+                    path.unlink()
+                elif logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'skipping non-existant clean up dir: {path}')
         return uncompressed
 
     @property
@@ -136,10 +155,26 @@ class Resource(Dictable):
 
         """
         if self.is_compressed:
-            name = f'{self.name}.{self._extension}'
+            name = f'{self.name}'
+            if self._extension is not None:
+                name = f'{name}.{self._extension}'
         else:
             name = self.name
         return name
+
+    def get_file_name(self, compressed: bool = False) -> str:
+        """Return the path where a resource is installed.
+
+        :param compressed: if ``True``, return the path where its compressed
+                           file (if any) lives
+
+        :return: the path of the resource
+
+        """
+        fname = self.compressed_name if compressed else self.name
+        if fname is None:
+            fname = self.remote_name
+        return fname
 
 
 @dataclass
@@ -268,9 +303,7 @@ class Installer(Dictable):
         :return: the path of the resource
 
         """
-        fname = resource.compressed_name if compressed else resource.name
-        if fname is None:
-            fname = resource.remote_name
+        fname = resource.get_file_name(compressed)
         return self.base_directory / fname
 
     def get_singleton_path(self, compressed: bool = False) -> Path:
@@ -308,6 +341,8 @@ class Installer(Dictable):
         target_path: Path = None
         if inst.is_compressed:
             comp_path = self.get_path(inst, True)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'needs decompression: {comp_path}')
             if not comp_path.is_file():
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'missing compressed file {comp_path}')
@@ -336,7 +371,11 @@ class Installer(Dictable):
         for inst in self.resources:
             local_path: Path = self.get_path(inst, False)
             status: Status = None
-            if local_path.exists():
+            # we can skip installation if we already find it on the file
+            # system; however, we have to re-check compressed files in cases
+            # where we've downloaded by not uncompressed between life-cycles
+            if local_path.exists() and not \
+               (inst.is_compressed and inst.check_path is not None):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'found: {local_path}--skipping')
                 comp_path = self.get_path(inst, True)
