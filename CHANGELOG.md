@@ -8,13 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.7] - 2021-10-22
 ### Changed
 - Rename `Install.installs` to `Install.resources`.
 - Switch `Resource.is_compressed` from a property to an attribute to make it
   overridable.
 - Changed many cached `dict` to type `frozendict` to guard against
   unintentional modification of immutable data structures.
-- Make base package relative to the ~/.cache directory if it exists.
+- Make base package relative to the` ~/.cache directory` if it exists.
+- Add singleton path to make path resolution in `Installer` easier to narrow.
 
 
 ## [0.0.6] - 2021-10-03
@@ -54,7 +56,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/Paul Landes/install/compare/v0.0.6...HEAD
+[Unreleased]: https://github.com/Paul Landes/install/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/Paul Landes/install/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/Paul Landes/install/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/Paul Landes/install/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/Paul Landes/install/compare/v0.0.3...v0.0.4
