@@ -1,0 +1,33 @@
+zensols.install package
+=======================
+
+Submodules
+----------
+
+zensols.install.download
+------------------------
+.. inheritance-diagram:: zensols.install.download
+   :parts: 1
+
+.. automodule:: zensols.install.download
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.install.installer
+-------------------------
+.. inheritance-diagram:: zensols.install.installer
+   :parts: 1
+
+.. automodule:: zensols.install.installer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.install
+   :members:
+   :undoc-members:
+   :show-inheritance:
