@@ -129,6 +129,11 @@ class Resource(Dictable):
                         f'path ({check_path}) exists: {check_path.exists()}')
         # the extracted data can either be a file (gz/bz2) or a directory;
         # compare to what we want to rename the target directory
+        #
+        # note: the check path has to be what extracts as, otherwise it it will
+        # unextract it again next time it checks; if the directory extracts as
+        # something other than the file name, set both the name and the check
+        # path to whatever that path is
         if self.rename and not check_path.exists():
             # the source is where it was extracted
             extracted = out_dir / self.remote_name
