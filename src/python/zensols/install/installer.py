@@ -120,8 +120,11 @@ class Resource(Dictable):
             out_dir.mkdir(parents=True, exist_ok=True)
             patoolib.extract_archive(str(src), outdir=str(out_dir))
             uncompressed = True
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'rename: {self.rename}, ' +
+                        f'path ({check_path}) exists: {check_path.exists()}')
         # the extracted data can either be a file (gz/bz2) or a directory
-        if self.rename and not check_path.exists():
+        if self.rename and not target.exists():
             ext_dir = out_dir / self.remote_name
             if not ext_dir.is_dir():
                 raise InstallError(f'Trying to create {check_path} but ' +
