@@ -107,13 +107,17 @@ class Resource(Dictable):
             src = path
             if out_dir is None:
                 out_dir = path.parent
+        # the target is the name we want after the process completes
         target = out_dir / self.name
+        # this is the name of the resulting file of what we expect, or the user
+        # can override it if they know what the real resulting file is
         if self.check_path is None:
             check_path = target
         else:
             check_path = out_dir / self.check_path
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'check path: {check_path}')
+        # uncompress if we can't find where the output is suppose to go
         if not check_path.exists():
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'uncompressing {src} to {out_dir}')
@@ -123,15 +127,17 @@ class Resource(Dictable):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'rename: {self.rename}, ' +
                         f'path ({check_path}) exists: {check_path.exists()}')
-        # the extracted data can either be a file (gz/bz2) or a directory
-        if self.rename and not target.exists():
-            ext_dir = out_dir / self.remote_name
-            if not ext_dir.is_dir():
+        # the extracted data can either be a file (gz/bz2) or a directory;
+        # compare to what we want to rename the target directory
+        if self.rename and not check_path.exists():
+            # the source is where it was extracted
+            extracted = out_dir / self.remote_name
+            if not extracted.exists():
                 raise InstallError(f'Trying to create {check_path} but ' +
-                                   f'missing extracted path: {ext_dir}')
+                                   f'missing extracted path: {extracted}')
             if logger.isEnabledFor(logging.INFO):
-                logger.info(f'renaming {ext_dir} to {target}')
-            ext_dir.rename(target)
+                logger.info(f'renaming {extracted} to {target}')
+            extracted.rename(target)
         if self.clean_up:
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'cleaning up downloaded file: {src}')
