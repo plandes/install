@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Change Log &mdash; Downloads and installs files 0.0.8 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="top.html" class="icon icon-home"> Downloads and installs files
+          </a>
+              <div class="version">
+                0.0.8
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="top.html">Downloads and installs files</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="top.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Change Log</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/CHANGELOG.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="change-log">
+<h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this headline"></a></h1>
+<p>All notable changes to this project will be documented in this file.</p>
+<p>The format is based on <a class="reference external" href="http://keepachangelog.com/">Keep a Changelog</a>
+and this project adheres to <a class="reference external" href="http://semver.org/">Semantic Versioning</a>.</p>
+<section id="unreleased">
+<h2>[Unreleased]<a class="headerlink" href="#unreleased" title="Permalink to this headline"></a></h2>
+</section>
+<section id="id1">
+<h2>[0.0.8] - 2022-01-25<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Allow install resource rename to follow through against target rather than a
+check path.</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>[0.0.7] - 2021-10-22<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<section id="id3">
+<h3>Changed<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Rename <code class="docutils literal notranslate"><span class="pre">Install.installs</span></code> to <code class="docutils literal notranslate"><span class="pre">Install.resources</span></code>.</p></li>
+<li><p>Switch <code class="docutils literal notranslate"><span class="pre">Resource.is_compressed</span></code> from a property to an attribute to make it
+overridable.</p></li>
+<li><p>Changed many cached <code class="docutils literal notranslate"><span class="pre">dict</span></code> to type <code class="docutils literal notranslate"><span class="pre">frozendict</span></code> to guard against
+unintentional modification of immutable data structures.</p></li>
+<li><p>Make base package relative to the<code class="docutils literal notranslate"> <span class="pre">~/.cache</span> <span class="pre">directory</span></code> if it exists.</p></li>
+<li><p>Add singleton path to make path resolution in <code class="docutils literal notranslate"><span class="pre">Installer</span></code> easier to narrow.</p></li>
+</ul>
+</section>
+</section>
+<section id="id4">
+<h2>[0.0.6] - 2021-10-03<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h2>
+<section id="added">
+<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add configuration for a sub directory to be appended to the base directory.</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2>[0.0.5] - 2021-10-02<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h2>
+<section id="id6">
+<h3>Added<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Configuration to override <code class="docutils literal notranslate"><span class="pre">Resource.remote_name</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="id7">
+<h2>[0.0.4] - 2021-09-22<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h2>
+<section id="id8">
+<h3>Changed<a class="headerlink" href="#id8" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Better uncompress semantics and factual result status.</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h2>[0.0.3] - 2021-09-21<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h2>
+<section id="id10">
+<h3>Added<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>An attribute of a path to check before compressing and flag to avoid renaming
+for zip files that un-compress in the relative root directory.</p></li>
+</ul>
+</section>
+</section>
+<section id="id11">
+<h2>[0.0.2] - 2021-09-21<a class="headerlink" href="#id11" title="Permalink to this headline"></a></h2>
+<section id="id12">
+<h3>Changed<a class="headerlink" href="#id12" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Installer is more <em>Pythonic</em>.</p></li>
+<li><p>Fix variable naming error message.</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>Added<a class="headerlink" href="#id13" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Installer is <em>writable</em>.</p></li>
+<li><p>Handle <code class="docutils literal notranslate"><span class="pre">.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">.bz2</span></code> files.</p></li>
+</ul>
+</section>
+</section>
+<section id="id14">
+<h2>[0.0.1] - 2021-09-02<a class="headerlink" href="#id14" title="Permalink to this headline"></a></h2>
+<section id="id15">
+<h3>Added<a class="headerlink" href="#id15" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Initial version.</p></li>
+</ul>
+<!-- links --><p>[Unreleased]: https://github.com/Paul Landes/install/compare/v0.0.8…HEAD
+[0.0.8]: https://github.com/Paul Landes/install/compare/v0.0.7…v0.0.8
+[0.0.7]: https://github.com/Paul Landes/install/compare/v0.0.6…v0.0.7
+[0.0.6]: https://github.com/Paul Landes/install/compare/v0.0.5…v0.0.6
+[0.0.5]: https://github.com/Paul Landes/install/compare/v0.0.4…v0.0.5
+[0.0.4]: https://github.com/Paul Landes/install/compare/v0.0.3…v0.0.4
+[0.0.3]: https://github.com/Paul Landes/install/compare/v0.0.2…v0.0.3
+[0.0.2]: https://github.com/Paul Landes/install/compare/v0.0.1…v0.0.2
+[0.0.1]: https://github.com/Paul Landes/install/compare/v0.0.0…v0.0.1</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Paul Landes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

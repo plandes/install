@@ -1,0 +1,10 @@
+<map id="inheritancec85331a98d" name="inheritancec85331a98d">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="105,5,177,31"/>
+<area shape="rect" id="node4" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="105,79,177,104"/>
+<area shape="rect" id="node2" title="Base exception from which almost all library raised errors extend." alt="" coords="209,5,282,31"/>
+<area shape="rect" id="node5" href="#zensols.install.installer.InstallError" target="_top" title="Raised for issues while downloading or installing files." alt="" coords="202,79,289,104"/>
+<area shape="rect" id="node3" title="A class that that generates a dictionary recursively from data classes and" alt="" coords="105,152,177,177"/>
+<area shape="rect" id="node6" href="#zensols.install.installer.Installer" target="_top" title="Downloads files from the internet and optionally extracts them." alt="" coords="5,225,77,251"/>
+<area shape="rect" id="node7" href="#zensols.install.installer.Resource" target="_top" title="A resource that is installed by downloading from the Internet and then" alt="" coords="102,225,181,251"/>
+<area shape="rect" id="node8" href="#zensols.install.installer.Status" target="_top" title="Tells of what was installed and how." alt="" coords="205,225,277,251"/>
+</map>
