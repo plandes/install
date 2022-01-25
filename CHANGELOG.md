@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [0.0.8] - 2022-01-25
+### Changed
+- Allow install resource rename to follow through against target rather than a
+  check path.
+
+
 ## [0.0.7] - 2021-10-22
 ### Changed
 - Rename `Install.installs` to `Install.resources`.
@@ -56,7 +62,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/Paul Landes/install/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/Paul Landes/install/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/Paul Landes/install/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/Paul Landes/install/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/Paul Landes/install/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/Paul Landes/install/compare/v0.0.4...v0.0.5
