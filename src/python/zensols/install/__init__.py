@@ -1,2 +1,2 @@
-from .download import Downloader
+from .download import *
 from .installer import InstallError, Resource, Status, Installer

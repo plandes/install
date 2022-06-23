@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- Authenticated downloads are now available.
+- Download previous and new functionality tests.
+
+### Changed
+- Remove deprecated `urllib` API for `urlopen`.  This adds a buffer size that
+  is configurable in the `Downloader` instance with a reasonable default.
+
+
 ## [0.0.8] - 2022-01-25
 ### Changed
 - Allow install resource rename to follow through against target rather than a

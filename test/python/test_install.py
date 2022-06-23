@@ -14,7 +14,7 @@ if 0:
 class TestApplication(unittest.TestCase):
     def setUp(self):
         target = Path('target')
-        conf = ImportIniConfig('test-resources/test.conf')
+        conf = ImportIniConfig('test-resources/install.conf')
         self.fac = ImportConfigFactory(conf)
         self.no_name_file = Path(target / 'dump/no_name_pdf_resource')
         self.none_name_file = Path(target / 'dump/dummy.pdf')

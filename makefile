@@ -9,6 +9,8 @@ PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy
 INFO_TARGETS +=		appinfo
 CLEAN_DEPS +=		cleanexample
 
+#PY_SRC_TEST_PAT =	'test_d*.py'
+
 include ./zenbuild/main.mk
 
 .PHONY:			appinfo
