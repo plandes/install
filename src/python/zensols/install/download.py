@@ -11,6 +11,8 @@ from pathlib import Path
 import urllib.request
 from urllib.request import Request
 from http.client import HTTPResponse
+from ssl import SSLContext
+import base64
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
@@ -75,7 +77,7 @@ class Downloader(object):
         if self.user_agent is not None:
             headers['User-Agent'] = self.user_agent
         request = Request(url, headers=headers)
-        context: 'SSLContext' = self._create_context(request)
+        context: SSLContext = self._create_context(request)
         result: HTTPResponse = urllib.request.urlopen(request, context=context)
         if self.use_progress_bar:
             flen = result.length
@@ -118,9 +120,6 @@ class AuthenticationDownloader(Downloader):
     """Whether to check the server's certification for validity."""
 
     def _create_context(self, request: Request) -> Optional[Any]:
-        import base64
-        from ssl import SSLContext
-
         lstr = base64.b64encode(bytes(f'{self.user}:{self.password}', 'ascii'))
         decoded = lstr.decode('utf-8')
         request.add_header('Authorization', f'Basic {decoded}')
