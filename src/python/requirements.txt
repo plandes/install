@@ -1,2 +1,2 @@
 patool>=1.12
-zensols.util~=1.7
+zensols.util~=1.11.0
