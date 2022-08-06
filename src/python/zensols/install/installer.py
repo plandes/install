@@ -49,13 +49,11 @@ class Resource(Dictable):
     from the file name.
 
     """
-
     is_compressed: bool = field(default=None)
     """Whether or not the file is compressed.  If this isn't set, it is derived
     from the file name.
 
     """
-
     rename: bool = field(default=True)
     """If ``True`` then rename the directory to the :obj:`name`."""
 
@@ -204,12 +202,10 @@ class Status(Dictable):
     downloaded.
 
     """
-
     target_path: Path = field()
     """Where the resource was installed and/or downloaded on the file system.
 
     """
-
     uncompressed: bool = field()
     """Whether or not the resource was uncompressed."""
 
@@ -238,7 +234,6 @@ class Installer(Dictable):
     :see: :obj:`package_resource`
 
     """
-
     resources: Tuple[Resource] = field()
     """The list of resources to install and track."""
 
