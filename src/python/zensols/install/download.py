@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 import urllib.request
 from urllib.request import Request
+from urllib import parse
 from http.client import HTTPResponse
 from ssl import SSLContext
 import base64
@@ -76,10 +77,11 @@ class Downloader(object):
         headers: Dict[str, str] = {}
         if self.user_agent is not None:
             headers['User-Agent'] = self.user_agent
+        url_info: parse.Parse = parse.urlparse(url)
         request = Request(url, headers=headers)
         context: SSLContext = self._create_context(request)
         result: HTTPResponse = urllib.request.urlopen(request, context=context)
-        if self.use_progress_bar:
+        if self.use_progress_bar and url_info.scheme != 'file':
             flen = result.length
             params = dict(self.tqdm_params)
             params.update({'miniters': 1, 'desc': url.split('/')[-1]})
