@@ -1,9 +1,8 @@
 # Downloads and installs files
 
 [![PyPI][pypi-badge]][pypi-link]
-[![Python 3.7][python37-badge]][python37-link]
-[![Python 3.8][python38-badge]][python38-link]
 [![Python 3.9][python39-badge]][python39-link]
+[![Python 3.10][python310-badge]][python310-link]
 [![Build Status][build-badge]][build-link]
 
 Simple light API to download and install files.  If the file appears to be a
@@ -106,12 +105,10 @@ Copyright (c) 2021 - 2022 Paul Landes
 [pypi]: https://pypi.org/project/zensols.install/
 [pypi-link]: https://pypi.python.org/pypi/zensols.install
 [pypi-badge]: https://img.shields.io/pypi/v/zensols.install.svg
-[python37-badge]: https://img.shields.io/badge/python-3.7-blue.svg
-[python37-link]: https://www.python.org/downloads/release/python-370
-[python38-badge]: https://img.shields.io/badge/python-3.8-blue.svg
-[python38-link]: https://www.python.org/downloads/release/python-380
 [python39-badge]: https://img.shields.io/badge/python-3.9-blue.svg
 [python39-link]: https://www.python.org/downloads/release/python-390
+[python310-badge]: https://img.shields.io/badge/python-3.10-blue.svg
+[python310-link]: https://www.python.org/downloads/release/python-310
 [build-badge]: https://github.com/plandes/install/workflows/CI/badge.svg
 [build-link]: https://github.com/plandes/install/actions
 
