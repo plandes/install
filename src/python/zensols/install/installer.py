@@ -246,7 +246,6 @@ class Installer(Dictable):
     given.  Otherwise, :obj:`base_directory` is used.  One must be set.
 
     """
-
     base_directory: Path = field(default=None)
     """The directory to base relative resource paths.  If this is not set, then
     this attribute is set from :obj:`package_resource` on initialization.
@@ -256,14 +255,12 @@ class Installer(Dictable):
     :see: :obj:`DEFAULT_BASE_DIRECTORIES`
 
     """
-
     sub_directory: Path = field(default=None)
     """A path that is added to :obj:`base_directory` if set.  Setting this is
     useful to allow for more directory structure in the installation (see class
     docs).
 
     """
-
     downloader: Downloader = field(default_factory=Downloader)
     """Used to download the file from the Internet."""
 
@@ -379,22 +376,27 @@ class Installer(Dictable):
 
         """
         statuses: List[Status] = []
-        for inst in self.resources:
-            local_path: Path = self.get_path(inst, False)
+        res: Resource
+        for res in self.resources:
+            local_path: Path = self.get_path(res, False)
             status: Status = None
             # we can skip installation if we already find it on the file
             # system; however, we have to re-check compressed files in cases
             # where we've downloaded by not uncompressed between life-cycles
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'local path: {local_path}, ' +
+                             f'check path: {res.check_path}, ' +
+                             f'compressed: {res.is_compressed}')
             if local_path.exists() and not \
-               (inst.is_compressed and inst.check_path is not None):
+               (res.is_compressed and res.check_path is not None):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'found: {local_path}--skipping')
-                comp_path = self.get_path(inst, True)
-                status = Status(inst, None, comp_path, False)
+                comp_path = self.get_path(res, True)
+                status = Status(res, None, comp_path, False)
             else:
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'missing {local_path}')
-                status = self._install(inst, local_path)
+                status = self._install(res, local_path)
             statuses.append(status)
         return statuses
 
