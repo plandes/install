@@ -6,8 +6,10 @@ __author__ = 'Paul Landes'
 from typing import Union, Tuple, Dict, List, Sequence
 from dataclasses import dataclass, field
 import logging
+import sys
 import re
 from pathlib import Path
+from io import TextIOBase
 import shutil
 import urllib
 from urllib.parse import ParseResult
@@ -395,6 +397,18 @@ class Installer(Dictable):
                 status = self._install(inst, local_path)
             statuses.append(status)
         return statuses
+
+    def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
+        dct = self.asdict()
+        del dct['resources']
+        self._write_dict(dct, depth, writer)
+        self._write_line('resources:', depth, writer)
+        res: Resource
+        for res in self.resources:
+            dct = res.asdict()
+            del dct['name']
+            self._write_line(res.name, depth + 1, writer)
+            self._write_dict(dct, depth + 2, writer)
 
     def __call__(self) -> List[Status]:
         return self.install()
