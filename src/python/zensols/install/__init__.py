@@ -1,2 +1,10 @@
+from zensols.util import APIError
+
+
+class InstallError(APIError):
+    """Raised for issues while downloading or installing files."""
+
+
 from .download import *
-from .installer import InstallError, Resource, Status, Installer
+from .resource import *
+from .installer import Status, Installer
