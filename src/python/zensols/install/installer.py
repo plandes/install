@@ -85,9 +85,10 @@ class Installer(Dictable):
 
     """
     sub_directory: Path = field(default=None)
-    """A path that is added to :obj:`base_directory` if set.  Setting this is
-    useful to allow for more directory structure in the installation (see class
-    docs).
+    """A path that is added to :obj:`base_directory` or the path referred by
+    :obj:`package_resource` if set.  Setting this is useful to allow for more
+    directory structure in the installation (see class docs).  This is only
+    useful when using it with :obj:`package_resource`.
 
     """
     downloader: Downloader = field(default_factory=Downloader)

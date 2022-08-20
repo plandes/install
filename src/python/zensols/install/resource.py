@@ -38,8 +38,9 @@ class Resource(Dictable):
     """Used for local file naming."""
 
     remote_name: str = field(default=None)
-    """The name of extracted file or directory.  If this isn't set, it is taken
-    from the file name.
+    """The name of extracted file (or root directory if a compressed file) after
+    being downloaded.  If this isn't set, it is taken from the file name portion
+    of the path of the URL.
 
     """
     is_compressed: bool = field(default=None)
@@ -53,6 +54,12 @@ class Resource(Dictable):
     check_path: str = field(default=None)
     """The file to check for existance before doing uncompressing."""
 
+    sub_path: Path = field(default=None)
+    """The path to a file in the compressed file after it is extracted.  This is
+    only used to obtain the file name in :meth:`get_file_name` when used to
+    locate the uncompressed resource file.
+
+    """
     clean_up: bool = field(default=True)
     """Whether or not to remove the downloaded compressed after finished."""
 
@@ -179,4 +186,6 @@ class Resource(Dictable):
         fname = self.compressed_name if compressed else self.name
         if fname is None:
             fname = self.remote_name
+        if not compressed and self.sub_path is not None:
+            fname = str(Path(fname, self.sub_path))
         return fname
