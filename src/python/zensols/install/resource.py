@@ -1,10 +1,12 @@
+from __future__ import annotations
 """Installable resource.
 
 """
 __author__ = 'Paul Landes'
 
-from typing import Sequence
+from typing import Sequence, Union
 from dataclasses import dataclass, field
+from abc import ABCMeta, abstractmethod
 import logging
 import re
 import urllib
@@ -16,6 +18,127 @@ from zensols.config import Dictable
 from . import InstallError
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class FileSystemUpdateContext(Dictable):
+    """The context given to a :class:`.FileSystemUpdate`.
+
+    """
+    resource: Resource = field()
+    """The :class:`.Resource` that created this context and updating the file
+    system.
+
+    """
+    check_path: Path = field()
+    """The installer relative :obj:`.Resource.check_path`."""
+
+    target: Path = field()
+    """The installer relative target path from :class:`.Resource`."""
+
+
+@dataclass
+class FileSystemUpdate(Dictable, metaclass=ABCMeta):
+    """A command (GoF pattern) to udpate the file system after a resource has
+    decompressed a file.  First experiment with :class:`.ListUpdate`, then find
+    the corresponding command with :obj:`dry_run` turned on, then turn it off
+    once you've validated its doing the right thing.
+
+    Path fields (i.e. :obj:`.ListUpdate.path`) are formatted with the dictionary
+    version of :class:`.FileSystemUpdateContext` and also a ``target`` property
+    with the uncompressed path.
+
+    """
+    dry_run: bool = field()
+    """If ``True`` don't do anything, just act like it."""
+
+    def _format_str(self, context: FileSystemUpdateContext, val: str) -> str:
+        return val.format(**context.asdict())
+
+    def _format_path(self, context: FileSystemUpdateContext,
+                     attr: str, make_path: bool = True) -> \
+            Union[Path, str]:
+        val: str = getattr(self, attr)
+        path_str: str = self._format_str(context, val)#val.format(**context.asdict())
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'{attr}({val}) -> {path_str}')
+        return Path(path_str) if make_path else path_str
+
+    @abstractmethod
+    def invoke(self, context: FileSystemUpdateContext):
+        pass
+
+
+@dataclass
+class ListUpdate(FileSystemUpdate):
+    """Lists the contents of :obj:`path`.
+
+    """
+    path: str = field()
+    """A file or directory to list."""
+
+    def invoke(self, context: FileSystemUpdateContext):
+        pdir: Path = self._format_path(context, 'path')
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'listing {pdir}')
+        for path in pdir.iterdir():
+            logger.info(f'list: {path.absolute()}')
+
+
+@dataclass
+class MoveUpdate(FileSystemUpdate):
+    """Move file(s) from :obj:`source` to :obj:`target`.
+
+    """
+    source: str = field()
+    """The source glob (i.e. ``{target}/../*)`` from where to move the files."""
+
+    target: str = field()
+    """The target directory where the files end up."""
+
+    def invoke(self, context: FileSystemUpdateContext):
+        source: str = self._format_path(context, 'source').resolve().absolute()
+        target: Path = self._format_path(context, 'target').resolve().absolute()
+        source: Path
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'moving {source} -> {target}')
+        for source in source.parent.glob(source.name):
+            source = source.resolve().absolute()
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'renaming {source} -> {target}')
+            if not self.dry_run:
+                shutil.move(source, target)
+
+
+@dataclass
+class RemoveUpdate(FileSystemUpdate):
+    """Remove/clean up files to help keep the file system "clean".
+
+    """
+    paths: Sequence[str] = field()
+    """The list of path formatted files to remove.  For example
+    ``{target}/../__MACOSX``.
+
+    """
+    def _rm_path(self, path: Path):
+        if path.is_dir():
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'removing clean up dir: {path}')
+            if not self.dry_run:
+                shutil.rmtree(path)
+        elif path.is_file():
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'removing clean up file: {path}')
+            if not self.dry_run:
+                path.unlink()
+        elif logger.isEnabledFor(logging.INFO):
+            logger.info(f'skipping non-existant clean up dir: {path}')
+
+    def invoke(self, context: FileSystemUpdateContext):
+        for path_str in self.paths:
+            path = Path(self._format_str(context, path_str))
+            path = path.resolve().absolute()
+            self._rm_path(path)
 
 
 @dataclass
@@ -63,8 +186,8 @@ class Resource(Dictable):
     clean_up: bool = field(default=True)
     """Whether or not to remove the downloaded compressed after finished."""
 
-    clean_up_paths: Sequence[Path] = field(default=None)
-    """Additional paths to remove after installation is complete"""
+    updates: Sequence[FileSystemUpdate] = field(default=())
+    """The file system updates to apply after the file has been decompressed."""
 
     def __post_init__(self):
         url: ParseResult = urllib.parse.urlparse(self.url)
@@ -106,7 +229,7 @@ class Resource(Dictable):
             if out_dir is None:
                 out_dir = path.parent
         # the target is the name we want after the process completes
-        target = out_dir / self.name
+        target: Path = out_dir / self.name
         # this is the name of the resulting file of what we expect, or the user
         # can override it if they know what the real resulting file is
         if self.check_path is None:
@@ -134,7 +257,7 @@ class Resource(Dictable):
         # path to whatever that path is
         if self.rename and not check_path.exists():
             # the source is where it was extracted
-            extracted = out_dir / self.remote_name
+            extracted: Path = out_dir / self.remote_name
             if not extracted.exists():
                 raise InstallError(f'Trying to create {check_path} but ' +
                                    f'missing extracted path: {extracted}')
@@ -145,19 +268,11 @@ class Resource(Dictable):
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'cleaning up downloaded file: {src}')
             src.unlink()
-        if self.clean_up_paths is not None:
-            for file_name in self.clean_up_paths:
-                path = out_dir / file_name
-                if path.is_dir():
-                    if logger.isEnabledFor(logging.INFO):
-                        logger.info(f'removing clean up dir: {path}')
-                    shutil.rmtree(path)
-                elif path.is_file():
-                    if logger.isEnabledFor(logging.INFO):
-                        logger.info(f'removing clean up file: {path}')
-                    path.unlink()
-                elif logger.isEnabledFor(logging.DEBUG):
-                    logger.debug(f'skipping non-existant clean up dir: {path}')
+        update_context = FileSystemUpdateContext(self, check_path, target)
+        update: FileSystemUpdate
+        for update in self.updates:
+            logger.info(f'updating: {update}')
+            update.invoke(update_context)
         return uncompressed
 
     @property
