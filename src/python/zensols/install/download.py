@@ -11,10 +11,12 @@ from pathlib import Path
 import urllib.request
 from urllib.request import Request
 from urllib import parse
+from urllib.error import HTTPError
 from http.client import HTTPResponse
 from ssl import SSLContext
 import base64
 from tqdm import tqdm
+from . import InstallError
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +82,11 @@ class Downloader(object):
         url_info: parse.Parse = parse.urlparse(url)
         request = Request(url, headers=headers)
         context: SSLContext = self._create_context(request)
-        result: HTTPResponse = urllib.request.urlopen(request, context=context)
+        result: HTTPResponse
+        try:
+            result = urllib.request.urlopen(request, context=context)
+        except HTTPError as e:
+            raise InstallError(f"Could not acceess '{url}: {e}'")
         if self.use_progress_bar and url_info.scheme != 'file':
             flen = result.length
             params = dict(self.tqdm_params)
