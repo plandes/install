@@ -8,8 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
-## [0.0.10] - 2022-10-01
+## [0.1.0] - 2022-10-01
+### Added
+- File system update commands (GoF pattern) in `Resource`.
 
+### Removed
+- `Resource.clean_up_paths`, which has been obviated by `RemoveUpdate` file
+  system update command.
+
+
+## [0.0.10] - 2022-10-01
 ## Added
 - A sub path in `Resource`.
 - Installer is writable.
@@ -80,7 +88,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/Paul Landes/install/compare/v0.0.10...HEAD
+[Unreleased]: https://github.com/Paul Landes/install/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Paul Landes/install/compare/v0.0.10...v0.1.0
 [0.0.10]: https://github.com/Paul Landes/install/compare/v0.0.9...v0.0.10
 [0.0.9]: https://github.com/Paul Landes/install/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/Paul Landes/install/compare/v0.0.7...v0.0.8
