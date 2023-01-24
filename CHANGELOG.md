@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Updated [zensols.util] to 1.12.0.
+
 
 ## [0.1.0] - 2022-10-01
 ### Added
@@ -100,3 +103,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [0.0.3]: https://github.com/Paul Landes/install/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/Paul Landes/install/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/Paul Landes/install/compare/v0.0.0...v0.0.1
+
+[zensols.util]: https://github.com/plandes/util
