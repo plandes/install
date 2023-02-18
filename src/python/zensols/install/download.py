@@ -80,9 +80,14 @@ class Downloader(object):
         if self.user_agent is not None:
             headers['User-Agent'] = self.user_agent
         url_info: parse.Parse = parse.urlparse(url)
-        request = Request(url, headers=headers)
-        context: SSLContext = self._create_context(request)
+        request: Request
         result: HTTPResponse
+        context: SSLContext
+        try:
+            request = Request(url, headers=headers)
+            context = self._create_context(request)
+        except Exception as e:
+            raise InstallError(f"Could not access '{url}' in {self}: {e}", e)
         try:
             result = urllib.request.urlopen(request, context=context)
         except HTTPError as e:
