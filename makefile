@@ -5,7 +5,7 @@
 # type of project
 PROJ_TYPE =		python
 # make modules to add functionality to a build
-PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy
+PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy markdown
 INFO_TARGETS +=		appinfo
 CLEAN_DEPS +=		cleanexample
 

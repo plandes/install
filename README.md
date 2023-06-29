@@ -7,7 +7,17 @@
 
 Simple light API to download and install files.  If the file appears to be a
 compressed file by ending with `zip`, `tar.gz`, `tgz` etc, then also un-compress
-the file after it is downloaded.
+the file after it is downloaded.  The process flow follows:
+
+1. Check to see if the installed file exists.  If not download it.
+1. Otherwise, if the file has been downloaded uncompress it.
+1. If the file could not be downloaded, uncompressed, or a file from the
+   uncompressed file isn't found an error is thrown.
+
+A destination location can be specified in the configuration.  It is also
+possible to install it in the `~/.cache/<package name>` where *package name* is
+the name the installed package.  For example, that would be `zensols.install`
+for the package installed for this repository.
 
 
 ## Documentation
@@ -70,7 +80,7 @@ installer.install()
 ```
 
 This code creates a new directory with the un-zipped files in `install_dir`:
-```bash
+```Readline Config
 INFO:zensols.install.installer:installing zenbuild-general_build to install_dir/zenbuild-general_build
 INFO:zensols.install.download:creating directory: install_dir
 INFO:zensols.install.download:downloading https://github.com/plandes/zenbuild/archive/refs/tags/general_build.zip to install_dir/zenbuild-general_build.zip
