@@ -80,7 +80,7 @@ installer.install()
 ```
 
 This code creates a new directory with the un-zipped files in `install_dir`:
-```RPM Spec
+```Readline Config
 INFO:zensols.install.installer:installing zenbuild-general_build to install_dir/zenbuild-general_build
 INFO:zensols.install.download:creating directory: install_dir
 INFO:zensols.install.download:downloading https://github.com/plandes/zenbuild/archive/refs/tags/general_build.zip to install_dir/zenbuild-general_build.zip
