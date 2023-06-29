@@ -80,6 +80,7 @@ installer.install()
 ```
 
 This code creates a new directory with the un-zipped files in `install_dir`:
+
 ```Readline Config
 INFO:zensols.install.installer:installing zenbuild-general_build to install_dir/zenbuild-general_build
 INFO:zensols.install.download:creating directory: install_dir
