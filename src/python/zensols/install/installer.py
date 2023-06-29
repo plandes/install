@@ -107,7 +107,7 @@ class Installer(Dictable):
         if self.sub_directory is not None:
             self.base_directory = self.base_directory / self.sub_directory
         if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'resolbed base directory: {self.base_directory}')
+            logger.debug(f'install base directory: {self.base_directory}')
 
     def _get_default_base(self) -> Path:
         existing = tuple(filter(lambda p: p.is_dir(),
@@ -209,16 +209,22 @@ class Installer(Dictable):
         res: Resource
         for res in self.resources:
             local_path: Path = self.get_path(res, False)
+            check_path: Path = None
             status: Status = None
-            # we can skip installation if we already find it on the file
-            # system; however, we have to re-check compressed files in cases
-            # where we've downloaded by not uncompressed between life-cycles
+            if res.check_path is not None:
+                check_path = self.base_directory / res.check_path
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'local path: {local_path}, ' +
-                             f'check path: {res.check_path}, ' +
+                             f'check path: {check_path}, ' +
+                             f'res check path: {res.check_path}, ' +
                              f'compressed: {res.is_compressed}')
-            if local_path.exists() and not \
-               (res.is_compressed and res.check_path is not None):
+            # we can skip installation if we already find it on the file system;
+            # however, we have to re-check compressed files in cases where we've
+            # downloaded by not uncompressed between life-cycles (ie raised
+            # exceptions)
+            if (check_path is not None and check_path.exists()) or \
+               (local_path.exists() and not
+               (res.is_compressed and res.check_path is not None)):
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'found: {local_path}--skipping')
                 comp_path = self.get_path(res, True)
