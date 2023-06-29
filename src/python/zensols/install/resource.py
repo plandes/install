@@ -1,9 +1,9 @@
-from __future__ import annotations
 """Installable resource.
 
 """
-__author__ = 'Paul Landes'
 
+from __future__ import annotations
+__author__ = 'Paul Landes'
 from typing import Sequence, Union
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
@@ -59,7 +59,7 @@ class FileSystemUpdate(Dictable, metaclass=ABCMeta):
                      attr: str, make_path: bool = True) -> \
             Union[Path, str]:
         val: str = getattr(self, attr)
-        path_str: str = self._format_str(context, val)#val.format(**context.asdict())
+        path_str: str = self._format_str(context, val)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'{attr}({val}) -> {path_str}')
         return Path(path_str) if make_path else path_str
