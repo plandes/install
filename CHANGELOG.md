@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [1.0.0] - 2023-08-16
+Functional and downstream moderate risk update release.
+
 ### Changed
 - Add extracted file check before installing.
 
