@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.0.0] - 2023-08-16
+### Changed
+- Add extracted file check before installing.
+
+
 ## [0.2.2] - 2023-06-29
 ### Changed
 - Add extracted file check before installing.
@@ -104,7 +109,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/Paul Landes/install/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/Paul Landes/install/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Paul Landes/install/compare/v0.2.2...v1.0.0
 [0.2.2]: https://github.com/Paul Landes/install/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/Paul Landes/install/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/Paul Landes/install/compare/v0.1.0...v0.2.0
