@@ -116,6 +116,8 @@ Copyright (c) 2021 - 2023 Paul Landes
 [pypi]: https://pypi.org/project/zensols.install/
 [pypi-link]: https://pypi.python.org/pypi/zensols.install
 [pypi-badge]: https://img.shields.io/pypi/v/zensols.install.svg
+[python310-badge]: https://img.shields.io/badge/python-3.10-blue.svg
+[python310-link]: https://www.python.org/downloads/release/python-310
 [python311-badge]: https://img.shields.io/badge/python-3.11-blue.svg
 [python311-link]: https://www.python.org/downloads/release/python-3110
 [build-badge]: https://github.com/plandes/install/workflows/CI/badge.svg
