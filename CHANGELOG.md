@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.1.0] - 2023-12-05
+### Changed
+- Relax [zensols.util] dependencies.
+
+### Added
+- Support for Python 3.11.
+
+### Removed
+- Support for Python 3.9.
+
+
 ## [1.0.0] - 2023-08-16
 Functional and downstream moderate risk update release.
 
@@ -111,7 +122,8 @@ Functional and downstream moderate risk update release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/Paul Landes/install/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Paul Landes/install/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Paul Landes/install/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Paul Landes/install/compare/v0.2.2...v1.0.0
 [0.2.2]: https://github.com/Paul Landes/install/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/Paul Landes/install/compare/v0.2.0...v0.2.1
