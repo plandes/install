@@ -11,7 +11,6 @@ from pathlib import Path
 import urllib.request
 from urllib.request import Request
 from urllib import parse
-from urllib.error import HTTPError
 from http.client import HTTPResponse
 from ssl import SSLContext
 import base64
@@ -80,18 +79,13 @@ class Downloader(object):
         if self.user_agent is not None:
             headers['User-Agent'] = self.user_agent
         url_info: parse.Parse = parse.urlparse(url)
-        request: Request
-        result: HTTPResponse
-        context: SSLContext
         try:
-            request = Request(url, headers=headers)
-            context = self._create_context(request)
+            request: Request = Request(url, headers=headers)
+            context: SSLContext = self._create_context(request)
+            result: HTTPResponse = urllib.request.urlopen(
+                request, context=context)
         except Exception as e:
-            raise InstallError(f"Could not access '{url}' in {self}: {e}", e)
-        try:
-            result = urllib.request.urlopen(request, context=context)
-        except HTTPError as e:
-            raise InstallError(f"Could not acceess '{url}: {e}'")
+            raise InstallError(f"Could not access '{url}': {e}") from e
         if self.use_progress_bar and url_info.scheme != 'file':
             flen = result.length
             params = dict(self.tqdm_params)

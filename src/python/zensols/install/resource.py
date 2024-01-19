@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Sequence, Union
+from typing import Sequence, Union, ClassVar
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging
@@ -149,10 +149,12 @@ class Resource(Dictable):
     extension.
 
     """
-    _DICTABLE_ATTRIBUTES = 'remote_name is_compressed compressed_name'.split()
-    _FILE_REGEX = re.compile(r'^(.+)\.(tar\.gz|tgz|tar\.bz2|gz|bz2|' +
-                             '|'.join(patoolib.ArchiveFormats) + ')$')
-    _NO_FILE_REGEX = re.compile(r'^(?:.+/)?(.+?)\.(.+)?$')
+    _DICTABLE_ATTRIBUTES: ClassVar[List[str]] = \
+        'remote_name is_compressed compressed_name'.split()
+    _FILE_REGEX: ClassVar[re.Pattern] = re.compile(
+        r'^(.+)\.(tar\.gz|tgz|tar\.bz2|gz|bz2|' +
+        '|'.join(patoolib.ArchiveFormats) + ')$')
+    _NO_FILE_REGEX: ClassVar[re.Pattern] = re.compile(r'^(?:.+/)?(.+?)\.(.+)?$')
 
     url: str = field()
     """The URL that locates the file to install."""
@@ -304,3 +306,6 @@ class Resource(Dictable):
         if not compressed and self.sub_path is not None:
             fname = str(Path(fname, self.sub_path))
         return fname
+
+    def __str__(self) -> str:
+        return f'{self.name}: {self.url}'

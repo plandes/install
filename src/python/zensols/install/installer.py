@@ -232,7 +232,11 @@ class Installer(Dictable):
             else:
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'missing {local_path}')
-                status = self._install(res, local_path)
+                try:
+                    status = self._install(res, local_path)
+                except Exception as e:
+                    raise InstallError(f"Could not install '{res}' " +
+                                       f" in path '{local_path}': {e}") from e
             statuses.append(status)
         return statuses
 
