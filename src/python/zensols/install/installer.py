@@ -236,7 +236,7 @@ class Installer(Dictable):
                     status = self._install(res, local_path)
                 except Exception as e:
                     raise InstallError(f"Could not install '{res}' " +
-                                       f" in path '{local_path}': {e}") from e
+                                       f"in path '{local_path}': {e}") from e
             statuses.append(status)
         return statuses
 
