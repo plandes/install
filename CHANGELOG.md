@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.1.2] - 2024-03-05
+### Changed
+- Error report messages.
+
+
 ## [1.1.1] - 2024-01-16
 ### Changed
 - Pin `patools` (utility used to decompress downloaded files) to version 1.12
@@ -128,7 +133,8 @@ Functional and downstream moderate risk update release.
 
 
 <!-- links -->
-[Unreleased]: https://github.com/Paul Landes/install/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/Paul Landes/install/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/Paul Landes/install/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/Paul Landes/install/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/Paul Landes/install/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Paul Landes/install/compare/v0.2.2...v1.0.0
