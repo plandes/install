@@ -1,0 +1,11 @@
+<map id="inheritancecaceb30e80" name="inheritancecaceb30e80">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="390,5,462,36"/>
+<area shape="rect" id="node3" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="382,84,470,115"/>
+<area shape="rect" id="node2" title="A class that that generates a dictionary recursively from data classes" alt="" coords="383,163,469,193"/>
+<area shape="rect" id="node4" href="#zensols.install.resource.FileSystemUpdate" target="_top" title="A command (GoF pattern) to udpate the file system after a resource has" alt="" coords="115,241,286,272"/>
+<area shape="rect" id="node5" href="#zensols.install.resource.FileSystemUpdateContext" target="_top" title="The context given to a :class:`.FileSystemUpdate`." alt="" coords="310,241,542,272"/>
+<area shape="rect" id="node9" href="#zensols.install.resource.Resource" target="_top" title="A resource that is installed by downloading from the Internet and then" alt="" coords="566,241,665,272"/>
+<area shape="rect" id="node6" href="#zensols.install.resource.ListUpdate" target="_top" title="Lists the contents of :obj:`path`." alt="" coords="5,320,113,351"/>
+<area shape="rect" id="node7" href="#zensols.install.resource.MoveUpdate" target="_top" title="Move file(s) from :obj:`source` to :obj:`target`." alt="" coords="138,320,263,351"/>
+<area shape="rect" id="node8" href="#zensols.install.resource.RemoveUpdate" target="_top" title="Remove/clean up files to help keep the file system &quot;clean&quot;." alt="" coords="288,320,436,351"/>
+</map>

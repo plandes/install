@@ -1,0 +1,4 @@
+<map id="inheritance244bef0bb3" name="inheritance244bef0bb3">
+<area shape="rect" id="node1" href="#zensols.install.download.AuthenticationDownloader" target="_top" title="Download by first authenticating by login with the server." alt="" coords="5,84,237,115"/>
+<area shape="rect" id="node2" href="#zensols.install.download.Downloader" target="_top" title="A utility class to download a file and (optionally) display a progress" alt="" coords="62,5,181,36"/>
+</map>
