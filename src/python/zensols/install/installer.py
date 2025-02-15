@@ -194,8 +194,6 @@ class Installer(Dictable):
                 if logger.isEnabledFor(logging.INFO):
                     logger.info(f'uncompressed to {comp_path}')
         else:
-            if logger.isEnabledFor(logging.INFO):
-                logger.info(f'downloading: {inst.url} -> {dst_path}')
             self.downloader.download(inst.url, dst_path)
             downloaded_path = dst_path
             target_path = dst_path
