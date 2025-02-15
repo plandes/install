@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- A method (`Installer.clear`) to remove downloaded and/or installed files.
+
+
 ## [1.2.0] - 2025-01-11
 ### Removed
 - Support for Python 3.10.

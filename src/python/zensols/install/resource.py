@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import Sequence, Union, ClassVar
+from typing import List, Sequence, Union, ClassVar
 from dataclasses import dataclass, field
 from abc import ABCMeta, abstractmethod
 import logging

@@ -3,11 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Union, Tuple, Dict, List
+from typing import Tuple, Dict, List, Set, Union
 from dataclasses import dataclass, field
 import logging
 import sys
+import itertools as it
 from pathlib import Path
+import shutil
 from io import TextIOBase
 from frozendict import frozendict
 from zensols.util import PackageResource
@@ -239,6 +241,27 @@ class Installer(Dictable):
                                        f"in path '{local_path}': {e}") from e
             statuses.append(status)
         return statuses
+
+    def clear(self, dry_run: bool = False):
+        """Remove any downloaded files this instance knows about.
+
+        :param dry_run: if ``True``, do not delete anything, just act like it
+
+        """
+        paths: Set[Path] = set(map(
+            lambda t: self.get_path(*t),
+            it.product(self.resources, (True, False))))
+        path: Path
+        for path in paths:
+            logger.info(f'checking path exists: {path}')
+            if path.is_file():
+                logger.info(f'removing file: {path}')
+                if not dry_run:
+                    path.unlink()
+            elif path.is_dir():
+                logger.info(f'removing directory: {path}')
+                if not dry_run:
+                    shutil.rmtree(path)
 
     def write(self, depth: int = 0, writer: TextIOBase = sys.stdout):
         dct = self.asdict()
