@@ -57,6 +57,7 @@ class_name = zensols.install.Downloader
 
 [installer]
 class_name = zensols.install.Installer
+# providing the `downloader` is optional
 downloader = instance: downloader
 # uncomment the below line, then comment out `base_directory` to use the
 # package name (using the zensols.cli.ApplicationFactory--see example); using
@@ -65,6 +66,9 @@ base_directory = path: install_dir
 #package_resource = ${package:name}
 resources = instance: list: zip_resource
 ```
+
+See the [Resource] class.
+
 
 Now use the configuration to create the installer and call it:
 ```python
@@ -121,3 +125,5 @@ Copyright (c) 2021 - 2025 Paul Landes
 [build-link]: https://github.com/plandes/install/actions
 
 [example]: https://github.com/plandes/install/tree/master/example
+
+[Resource]: ../api/zensols.install.html#zensols.install.resource.Resource
