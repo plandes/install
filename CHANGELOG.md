@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- Switch build tools to [pixi].
+
+
 ## [1.2.1] - 2025-02-15
 ### Added
 - A method (`Installer.clear`) to remove downloaded and/or installed files.
@@ -169,3 +173,4 @@ Functional and downstream moderate risk update release.
 [0.0.1]: https://github.com/Paul Landes/install/compare/v0.0.0...v0.0.1
 
 [zensols.util]: https://github.com/plandes/util
+[pixi]: https://pixi.sh
