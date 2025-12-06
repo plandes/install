@@ -42,12 +42,15 @@ The below code is given in the [example].
 First create the installer configuration with each file to be installed as a
 resource as a file `install.conf`:
 ```ini
-[zip_resource]
+[build_resource]
 class_name = zensols.install.Resource
 url = https://github.com/plandes/zenbuild/archive/refs/tags/general_build.zip
 # we have to give the name of the diretory in the zip file so the program knows
 # what to unzip; otherwise it is named from the section, or file if `None`
 name = zenbuild-general_build
+# a file in the compressed archive to access; also used to indicate it was
+# (already) extracted
+sub_path = src/python/gtagutil
 # uncomment below to keep the `zenbuild-general_build.zip` zip file
 #clean_up = False
 
@@ -63,23 +66,43 @@ downloader = instance: downloader
 # package name (using the zensols.cli.ApplicationFactory--see example); using
 # `package_resource` will in install a ~/.<package name> install directory
 base_directory = path: install_dir
-#package_resource = ${package:name}
-resources = instance: list: zip_resource
+# give the installer access to the resource
+resources = instance: list: build_resource
 ```
 
-See the [Resource] class.
+Now use the configuration to create an [Installer] and access an file to be
+uncompressed via a [Resource]:
 
-
-Now use the configuration to create the installer and call it:
 ```python
 import logging
 from zensols.config import IniConfig, ImportConfigFactory
-from zensols.install import Installer
+from zensols.install import Resource, Installer
 
 logging.basicConfig(level=logging.INFO)
+
+# create the installer
 fac = ImportConfigFactory(IniConfig('install.conf'))
 installer: Installer = fac.instance('installer')
+
+# print the resources the installer contains
+res: Resource
+for res in self.installer.resources:
+	res.write_to_log(logger, depth=1)
+
+# iterate over the paths the installer creates from the resources
+path: Path
+for path in self.installer:
+	logger.info(f'resource path: {path}')
+
+# install the files
 installer.install()
+
+# access a file
+ufile: Path = self.installer.get_singleton_path()
+print(f'uncompressed file: {ufile}, exists: {ufile.is_file()}')
+
+# optionally remove any installed files
+self.installer.clear()
 ```
 
 This code creates a new directory with the un-zipped files in `install_dir`:
@@ -126,4 +149,5 @@ Copyright (c) 2021 - 2025 Paul Landes
 
 [example]: https://github.com/plandes/install/tree/master/example
 
-[Resource]: ../api/zensols.install.html#zensols.install.resource.Resource
+[Resource]: api/zensols.install.html#zensols.install.resource.Resource
+[Installer]: ../api/zensols.install.html#zensols.install.installer.Installer
