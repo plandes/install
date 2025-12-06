@@ -66,7 +66,7 @@ class Installer(Dictable):
     :see: :obj:`package_resource`
 
     """
-    resources: Tuple[Resource] = field()
+    resources: Tuple[Resource, ...] = field()
     """The list of resources to install and track."""
 
     package_resource: Union[str, PackageResource] = field(default=None)
@@ -276,7 +276,7 @@ class Installer(Dictable):
     def __call__(self) -> List[Status]:
         return self.install()
 
-    def __getitem__(self, resource: Union[str, Resource]):
+    def __getitem__(self, resource: Union[str, Resource]) -> Path:
         if isinstance(resource, str):
             resource = self.by_name[resource]
         return self.get_path(resource)
