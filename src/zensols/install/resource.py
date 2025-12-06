@@ -1,7 +1,6 @@
 """Installable resource.
 
 """
-
 from __future__ import annotations
 __author__ = 'Paul Landes'
 from typing import List, Sequence, Union, ClassVar
